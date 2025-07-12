@@ -1,0 +1,33 @@
+# === Rust/Cargo related ===
+/target/
+/**/*.rs.bk
+
+# === IDEs and editors ===
+# VS Code
+.vscode/
+/.vscode/*
+# JetBrains IDEs (e.g., CLion, IntelliJ)
+.idea/
+*.iml
+
+# === Build / Binaries ===
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.out
+
+# === Logs and temporary files ===
+*.log
+*.tmp
+*.swp
+*.swo
+
+# === macOS ===
+.DS_Store
+
+# === Others ===
+# By default, keep only example input/output files or scripts you intend to share.
+outputs/
+!outputs/README.md
