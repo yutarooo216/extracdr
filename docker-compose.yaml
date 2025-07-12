@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  extracdr:
+    build: .
+    container_name: extracdr
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true

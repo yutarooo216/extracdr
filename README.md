@@ -1,52 +1,78 @@
 # extracdr
 
-`extracdr` is a command-line tool for extracting antibody CDR (Complementarity Determining Regions) sequences from a FASTA file.  
-Internally, it calls [ANARCI](https://github.com/oxpig/ANARCI) for numbering and annotation.
+`extracdr` is a command-line tool for extracting antibody CDR (Complementarity Determining Regions) sequences from FASTA files.  
+Internally, it uses [ANARCI](https://github.com/oxpig/ANARCI) for IMGT-based numbering and annotation.  
+This version is designed to work seamlessly with Docker Compose.
 
 ## Features
 
-- Supports FASTA input
-- CDR annotation using the IMGT scheme
-- JSON output option
-- Can be used without Rust or Cargo (via prebuilt binary)
+- FASTA input support  
+- IMGT-based CDR extraction  
+- JSON output  
+- Simple CLI and Docker Compose integration  
 
-## Download
+## Getting Started (with Docker Compose)
 
-1. Visit the [Releases](https://github.com/yourname/extracdr/releases) page.
-2. Download the binary for your platform:
-   - `extracdr-macos`
-   - `extracdr-linux`
-   - `extracdr-windows.exe`
-3. (Linux/macOS only) Make the binary executable:
+### 1. Clone and build
 
 ```bash
-chmod +x extracdr-macos
+git clone https://github.com/yourname/extracdr.git
+cd extracdr
+docker compose build
 ```
 
-4. Run the tool:
+### 2. Prepare your input
+
+Create a FASTA file (e.g. `input.fasta`) in the project root:
+
+```fasta
+>Trastuzumab_H
+EVQLVESGGGLVQPGGSLRLSCAASGYTFSSYWMHWVRQAPGKGLEWVSAISSGGSHTYYADSVKGRFTISRDNAKNSLYLQMNSLRAEDTAVYYCAR
+
+>Trastuzumab_L
+DIQMTQSPSSLSASVGDRVTITCRASQDISNYLNWYQQKPGKAPKLLIYAASSLQSGVPSRFSGSGSGTDFTLTISSLQPEDFATYYCQQYNSYPYTFGQGTKVEIK
+```
+
+### 3. Run extracdr
 
 ```bash
-./extracdr-macos -i input.fasta
+docker compose up -d
+docker exec -it extracdr /bin/bash
+extracdr -i test.fasta --json
 ```
 
-## Requirements
+This command will:
 
-- Python 3.x
-- ANARCI installed via pip:
+- Mount `test.fasta` to `/app/test.fasta` inside the container  
+- Extract CDRs using ANARCI  
+- Write results to `/app/outputs/results.json` and `/app/outputs/anarci.tsv`
 
-```bash
-pip install anarci
+### 4. Output Structure
+
+```
+outputs/
+├── anarci.tsv     # Raw ANARCI output
+└── results.json   # CDR JSON output
 ```
 
-Make sure `anarci` is accessible from your system's PATH.
+Example output (`results.json`):
 
-## Usage
-
-```bash
-extracdr -i input.fasta
+```json
+{
+  "Trastuzumab_H": {
+    "cdr1": "GYTF----SSYW",
+    "cdr2": "ISSG--GSHT",
+    "cdr3": "A-----------R"
+  },
+  "Trastuzumab_L": {
+    "cdr1": "QDI------SNY",
+    "cdr2": "AA-------S",
+    "cdr3": "QQYNS----YPYT"
+  }
+}
 ```
 
-### Options
+## CLI Options
 
 | Option             | Description                                  |
 |--------------------|----------------------------------------------|
@@ -57,19 +83,10 @@ extracdr -i input.fasta
 | `-h`, `--help`      | Show help message                            |
 | `-V`, `--version`   | Show version information                     |
 
-## Output Structure
-
-```
-outputs/
-├── results.txt     # Tab-separated CDR annotations
-├── results.json    # JSON output (only if --json is specified)
-└── log/            # ANARCI logs and intermediate files
-```
-
 ## License
 
-This software is licensed under the MIT License.  
-ANARCI is licensed under the [BSD 3-Clause License](https://github.com/oxpig/ANARCI/blob/master/LICENSE).
+- extracdr: MIT License  
+- ANARCI: [BSD 3-Clause](https://github.com/oxpig/ANARCI/blob/master/LICENSE)
 
 ## Author
 
